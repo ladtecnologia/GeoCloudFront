@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
     }
 
     if (this.f['email'].value == 'adm@geocloudai.com' && this.f['password'].value == 'GeoCloudAI_2024') {
-      this.router.navigate(['/pages/crm/users']);
+      this.router.navigate(['/pages/users']);
     } else {
       this.toastService.show('Email or password incorrect !', { classname: 'bg-danger text-white', delay: 5000 });
     }

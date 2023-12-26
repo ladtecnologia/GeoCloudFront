@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-// Component pages
-import { ContactsComponent } from './crm/contacts/contacts.component';
+import { UsersComponent } from './users/users.component';
 
 const routes: Routes = [
     {
-      path: 'crm', loadChildren: () => import('./crm/crm.module').then(m => m.CrmModule)
+      path: 'users',
+      component: UsersComponent
     }
 ];
 

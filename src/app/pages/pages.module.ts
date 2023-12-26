@@ -1,13 +1,13 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { NgbToastModule, NgbProgressbarModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbToastModule, NgbProgressbarModule, NgbTypeaheadModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import {  } from '@ng-bootstrap/ng-bootstrap';
 
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { CountToModule } from 'angular-count-to';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { SimplebarAngularModule } from 'simplebar-angular';
 
 // Swiper Slider
@@ -24,10 +24,14 @@ import { PagesRoutingModule } from "./pages-routing.module";
 import { SharedModule } from "../shared/shared.module";
 import { WidgetModule } from '../shared/widget/widget.module';
 
+
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { UsersComponent } from './users/users.component';
+
 @NgModule({
   declarations: [
-
-  ],
+    UsersComponent,
+ ],
   imports: [
     CommonModule,
     FormsModule,
@@ -36,14 +40,17 @@ import { WidgetModule } from '../shared/widget/widget.module';
     FlatpickrModule.forRoot(),
     CountToModule,
     NgApexchartsModule,
+    NgbTypeaheadModule,
     LeafletModule,
     NgbDropdownModule,
     SimplebarAngularModule,
+    ReactiveFormsModule,
     PagesRoutingModule,
     SharedModule,
     WidgetModule,
     NgxUsefulSwiperModule,
-    LightboxModule
+    LightboxModule,
+    PaginationModule.forRoot(),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

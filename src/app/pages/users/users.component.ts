@@ -10,6 +10,7 @@ import { UserService } from 'src/app/services/user.service';
 import { PaginatedResult, Pagination } from 'src/app/models/Pagination';
 
 import { Subject, debounceTime } from 'rxjs';
+import { ngxCsv } from 'ngx-csv';
 
 @Component({
   selector: 'app-users',
@@ -21,14 +22,22 @@ export class UsersComponent {
 
   // FORM MAIN ************************************************************************************
 
-  breadCrumbItems!: Array<{}>;
-  users: User[] = [];
-
+  public breadCrumbItems!: Array<{}>;
+  public users: User[] = [];
   public term = '';
   public termoBuscaChanged: Subject<string> = new Subject<string>();
   public pagination = {} as Pagination;
   public sortField = 'id';
   public sortReverse = false;
+  public masterSelected!: boolean; 
+  public checkedValGet: number[] = [];
+  
+  public user = {} as User;
+  public userForm!: FormGroup;
+  public modeForm: string = '';
+  get f(): any {
+    return this.userForm.controls;
+  }
 
   constructor(
     private userService : UserService,
@@ -45,7 +54,7 @@ export class UsersComponent {
     this.getUsers();
   }
 
-  // GET , FILTER, ORDER and VIEW *****************************************************************
+  // GET and VIEW *********************************************************************************
 
   public getUsers(): void {
     this.userService.get(this.pagination.currentPage, 
@@ -65,6 +74,27 @@ export class UsersComponent {
     })
   }
 
+  public viewUser(id: any) {
+    if (id > 0) {
+      this.userService.getById(id).subscribe({
+        next: (res: User) => {
+          (document.getElementById('__firstName') as HTMLImageElement).innerHTML = res.lastName! + ', ' + res.firstName!;
+          (document.getElementById('__lastName') as HTMLImageElement).innerHTML  = res.company!;
+          (document.getElementById('_firstName') as HTMLImageElement).innerHTML  = res.firstName! + ' - ' + res.id!;
+          (document.getElementById('_lastName') as HTMLImageElement).innerHTML   = res.lastName!;
+          (document.getElementById('_email') as HTMLImageElement).innerHTML      = res.email!;
+          (document.getElementById('_company') as HTMLImageElement).innerHTML    = res.company!;
+        },
+        error: (error: any) => {
+          console.error(error);
+          this.msg('error');
+        }
+      })
+    }
+  }
+
+   // FILTER, ORDER, PAGINATED and EXPORT *********************************************************
+
   public filterUsers(evt: any) : void {
     if (this.termoBuscaChanged.observers.length == 0){
       this.termoBuscaChanged.pipe(debounceTime(400)).subscribe({
@@ -76,13 +106,6 @@ export class UsersComponent {
       });
     }
     this.termoBuscaChanged.next(evt.value);
-  }
-
-  public pageChanged(event: any): void {
-    if (this.pagination.currentPage != event.page) {
-      this.pagination.currentPage = event.page;
-      this.getUsers();
-    }
   }
 
   public OrderByChange() {
@@ -99,30 +122,40 @@ export class UsersComponent {
     this.getUsers(); 
   }
 
-  public viewUser(id: any) {
-    if (id > 0) {
-      this.userService.getById(id).subscribe({
-        next: (res: User) => {
-          (document.getElementById('__firstName') as HTMLImageElement).innerHTML = res.lastName! + ', ' + res.firstName!;
-          (document.getElementById('__lastName') as HTMLImageElement).innerHTML  = res.company!;
-          (document.getElementById('_firstName') as HTMLImageElement).innerHTML  = res.firstName!;
-          (document.getElementById('_lastName') as HTMLImageElement).innerHTML   = res.lastName!;
-          (document.getElementById('_email') as HTMLImageElement).innerHTML      = res.email!;
-          (document.getElementById('_company') as HTMLImageElement).innerHTML    = res.company!;
-        },
-        error: (error: any) => {
-          console.error(error);
-          this.msg('error');
-        }
-      })
+  public pageChanged(event: any): void {
+    if (this.pagination.currentPage != event.page) {
+      this.pagination.currentPage = event.page;
+      this.getUsers();
     }
+  }
+
+  public showingEntries(): string{
+    var x: number = 1 + (this.pagination.currentPage! -1 ) * (this.pagination.pageSize!);
+    var y: number = x + (this.pagination.pageSize!) - 1;
+    var z: number = this.pagination.totalCount!;
+    if (x > z) { x = z};
+    if (y > z) { y = z};
+    return "Showing entries " + x +  " to " + y + " of " + z;
+  }
+
+  public csvFileExport() {
+    var options = {
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalseparator: '.',
+      showLabels: true,
+      showTitle: true,
+      title: 'User Data',
+      useBom: true,
+      noDownload: false,
+      headers: ["id", "fisrtName", "lastName", "email", "company"]
+    };
+    new ngxCsv(this.users, "Users", options);
   }
   
   // CHECK BOX ************************************************************************************
 
-  masterSelected!: boolean; 
-
-  checkUncheckAll(ev: any) {
+  public checkUncheckAll(ev: any) {
     var checkboxes: any = document.getElementsByName('checkAll');
     for (var i = 0; i < checkboxes.length; i++) {
       checkboxes[i].checked = this.masterSelected;
@@ -132,7 +165,7 @@ export class UsersComponent {
       (document.getElementById("remove-actions") as HTMLElement).style.display = "none"; 
   }
 
-  onCheckboxChange(e: any) {
+  public onCheckboxChange(e: any) {
     var someCheck: boolean = false;
     var checkboxes: any = document.getElementsByName('checkAll');
     for (var i = 0; i < checkboxes.length; i++) {
@@ -147,8 +180,6 @@ export class UsersComponent {
   }  
 
   // DELETE ***************************************************************************************
-
-  checkedValGet: number[] = [];
 
   public confirm(content: any, id: any) {
     this.checkedValGet = [];
@@ -185,14 +216,6 @@ export class UsersComponent {
   }
         
   // FORM MODAL - ADD / EDIT **********************************************************************
-
-  user = {} as User;
-  userForm!: FormGroup;
-  modeForm: string = '';
-
-  get f(): any {
-    return this.userForm.controls;
-  }
 
   public cssValidator(campoForm: FormControl): any {
     return {'is-invalid' : campoForm.errors && campoForm.touched};
@@ -273,15 +296,6 @@ export class UsersComponent {
 
   // MSG ******************************************************************************************
   
-  public showingEntries(): string{
-    var x: number = 1 + (this.pagination.currentPage! -1 ) * (this.pagination.pageSize!);
-    var y: number = x + (this.pagination.pageSize!) - 1;
-    var z: number = this.pagination.totalCount!;
-    if (x > z) { x = z};
-    if (y > z) { y = z};
-    return "Showing entries " + x +  " to " + y + " of " + z;
-  }
-
   public msg(msg: string){
     let timerInterval: any;
     Swal.fire({
