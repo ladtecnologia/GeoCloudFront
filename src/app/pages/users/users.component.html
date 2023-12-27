@@ -17,20 +17,6 @@
                                 (click)="deleteMultiple(deleteModel)">
                                 <i class="ri-delete-bin-2-line"></i>
                             </button>
-                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#addmembers"><i
-                                    class="ri-filter-2-line me-1 align-bottom"></i> Filters</button>
-                            <button class="btn btn-soft-success" (click)="csvFileExport()">Export
-                            </button>
-                            <button type="button" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
-                                class="btn btn-soft-info arrow-none" ngbDropdownToggle>
-                                <i class="ri-more-2-fill"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
-                                <li><a class="dropdown-item" href="javascript:void(0);">All</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);">Last Week</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);">Last Month</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);">Last Year</a></li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -67,7 +53,7 @@
             <div class="card-body">
                 <div>
                     <div class="table-responsive table-card mb-2">
-                        <table class="table">
+                        <table class="table table-hover">
                             <thead>
                                 <tr class="bg-light">
                                     <th scope="col" style="width: 50px;">
@@ -92,7 +78,16 @@
                                         </div>
                                     </th>
                                     <td>
-                                        <ngb-highlight [result]="data.firstName + ' - ' + data.id" [term]="term"></ngb-highlight>
+                                        <div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0"><img src="assets/images/users/{{data.id}}.jpg"
+                                                        alt="" class="avatar-xs rounded-circle">
+                                                </div>
+                                                <div class="flex-grow-1 ms-2 name">
+                                                    <ngb-highlight [result]="data.firstName + ' - ' + data.id" [term]="term"></ngb-highlight>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td>
                                         <ngb-highlight [result]="data.lastName" [term]="term"></ngb-highlight>
@@ -105,16 +100,6 @@
                                     </td>
                                     <td>
                                         <ul class="list-inline hstack gap-2 mb-0">
-                                            <li class="list-inline-item edit" ngbTooltip="Call" placement="top">
-                                                <a href="javascript:void(0);" class="text-muted d-inline-block">
-                                                    <i class="ri-phone-line fs-16"></i>
-                                                </a>
-                                            </li>
-                                            <li class="list-inline-item edit" ngbTooltip="Message" placement="top">
-                                                <a href="javascript:void(0);" class="text-muted d-inline-block">
-                                                    <i class="ri-question-answer-line fs-16"></i>
-                                                </a>
-                                            </li>
                                             <li class="list-inline-item" ngbTooltip="View" placement="top">
                                                 <a href="javascript:void(0);"
                                                     (click)="viewUser(data.id)">
@@ -174,29 +159,12 @@
         <div class="card">
             <div class="card-body text-center user-details">
                 <div class="position-relative d-inline-block">
-                    <img src="assets/images/users/avatar-10.jpg" alt="" class="avatar-lg rounded-circle img-thumbnail">
+                    <img id="_img" src="" alt="" class="avatar-lg rounded-circle img-thumbnail">
                     <span class="user-active position-absolute rounded-circle bg-success"></span><span
                         class="visually-hidden"></span>
                 </div>
                 <h5 class="mt-4 mb-1" id="__firstName"></h5>
                 <p class="text-muted" id="__lastName"></p>
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item avatar-xs">
-                        <a href="javascript:void(0);" class="avatar-title bg-success-subtle text-success fs-15 rounded">
-                            <i class="ri-phone-line"></i>
-                        </a>
-                    </li>
-                    <li class="list-inline-item avatar-xs">
-                        <a href="javascript:void(0);" class="avatar-title bg-danger-subtle text-danger fs-15 rounded">
-                            <i class="ri-mail-line"></i>
-                        </a>
-                    </li>
-                    <li class="list-inline-item avatar-xs">
-                        <a href="javascript:void(0);" class="avatar-title bg-warning-subtle text-warning fs-15 rounded">
-                            <i class="ri-question-answer-line"></i>
-                        </a>
-                    </li>
-                </ul>
             </div>
             <div class="card-body">
                 <h6 class="text-muted text-uppercase fw-semibold mb-3">User Information</h6>

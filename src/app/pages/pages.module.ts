@@ -1,8 +1,8 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbToastModule, NgbProgressbarModule, NgbTypeaheadModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import {  } from '@ng-bootstrap/ng-bootstrap';
+import { NgbToastModule, NgbProgressbarModule, NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdownModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { CountToModule } from 'angular-count-to';
@@ -39,6 +39,7 @@ import { UsersComponent } from './users/users.component';
     NgbProgressbarModule,
     FlatpickrModule.forRoot(),
     CountToModule,
+    NgbTooltipModule,
     NgApexchartsModule,
     NgbTypeaheadModule,
     LeafletModule,

@@ -22,6 +22,9 @@ export class UsersComponent {
 
   // FORM MAIN ************************************************************************************
 
+  submitted = false;
+
+
   public breadCrumbItems!: Array<{}>;
   public users: User[] = [];
   public term = '';
@@ -47,7 +50,7 @@ export class UsersComponent {
 
   ngOnInit(): void {
     this.breadCrumbItems = [
-      { label: 'CRM' },
+      { label: 'Pages' },
       { label: 'Users', active: true }
     ];
     this.pagination = {currentPage: 1, pageSize: 8, totalCount: 1, totalPages:1} as Pagination;
@@ -84,6 +87,7 @@ export class UsersComponent {
           (document.getElementById('_lastName') as HTMLImageElement).innerHTML   = res.lastName!;
           (document.getElementById('_email') as HTMLImageElement).innerHTML      = res.email!;
           (document.getElementById('_company') as HTMLImageElement).innerHTML    = res.company!;
+          (document.getElementById('_img') as HTMLImageElement).src              = 'assets/images/users/' + res.id! + '.jpg';
         },
         error: (error: any) => {
           console.error(error);
@@ -93,7 +97,7 @@ export class UsersComponent {
     }
   }
 
-   // FILTER, ORDER, PAGINATED and EXPORT *********************************************************
+  // FILTER, ORDER, PAGINATED and EXPORT *********************************************************
 
   public filterUsers(evt: any) : void {
     if (this.termoBuscaChanged.observers.length == 0){
@@ -223,6 +227,7 @@ export class UsersComponent {
 
   private validation(): void {
     this.userForm = this.fb.group({
+      image_src: ['avatar-8.jpg'],
       id:        [''],
       firstName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
       lastName:  ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
