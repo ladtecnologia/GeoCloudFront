@@ -22,9 +22,6 @@ export class UsersComponent {
 
   // FORM MAIN ************************************************************************************
 
-  submitted = false;
-
-
   public breadCrumbItems!: Array<{}>;
   public users: User[] = [];
   public term = '';
@@ -38,6 +35,7 @@ export class UsersComponent {
   public user = {} as User;
   public userForm!: FormGroup;
   public modeForm: string = '';
+  public  submitted = false;
   get f(): any {
     return this.userForm.controls;
   }
@@ -244,17 +242,24 @@ export class UsersComponent {
 
   public modalPut(id: any, content: any): void {
     this.modeForm = 'put';
+    this.submitted = false;
+    this.modalService.open(content, { size: 'md', centered: true });
+    //Change Title and Button
+    var modelTitle = document.getElementById('modalTitle') as HTMLAreaElement;
+    modelTitle.innerHTML = 'Edit User';
+    var updateBtn = document.getElementById('add-btn') as HTMLAreaElement;
+    updateBtn.innerHTML = 'Update';
     if (id > 0) {
       this.userService.getById(id).subscribe({
         next: (user: User) => {
-          this.user = {...user };
-          this.userForm.patchValue(this.user);
-          this.modalService.open(content, { size: 'md', centered: true });
-          //Change Title and Button
-          var modelTitle = document.getElementById('modalTitle') as HTMLAreaElement;
-          modelTitle.innerHTML = 'Edit User';
-          var updateBtn = document.getElementById('add-btn') as HTMLAreaElement;
-          updateBtn.innerHTML = 'Update';
+          //this.user = {...user };
+          //this.userForm.patchValue(this.user);
+          this.userForm.controls['firstName'].setValue(user.firstName);
+          this.userForm.controls['lastName'].setValue(user.lastName);
+          this.userForm.controls['email'].setValue(user.email);
+          this.userForm.controls['company'].setValue(user.company);
+          this.userForm.controls['image_src'].setValue('assets/images/users/'+user.id+'.jpg');
+          (document.getElementById('customer-img') as HTMLImageElement).src = 'assets/images/users/'+user.id+'.jpg';
         },
         error: (error: any) => {
           console.error(error);
@@ -297,6 +302,10 @@ export class UsersComponent {
         }
       }
     }
+  }
+
+  public fileChange(event: any){
+
   }
 
   // MSG ******************************************************************************************

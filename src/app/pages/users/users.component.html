@@ -209,6 +209,41 @@
             <div class="row g-3">
                 <div class="col-lg-12">
                     <input type="hidden" name="id" value="" formControlName="id" />
+
+
+                    <div class="text-center">
+                        <div class="position-relative d-inline-block">
+                            <input type="hidden" name="id" value="" formControlName="ids" />
+                            <div class="position-absolute  bottom-0 end-0">
+                                <label for="customer-image-input" class="mb-0" data-bs-toggle="tooltip"
+                                    data-bs-placement="right" title="Select Image">
+                                    <div class="avatar-xs cursor-pointer">
+                                        <div
+                                            class="avatar-title bg-light border rounded-circle text-muted">
+                                            <i class="ri-image-fill"></i>
+                                        </div>
+                                    </div>
+                                </label>
+                                <input class="form-control d-none" id="customer-image-input" type="file"
+                                    accept="image/png, image/gif, image/jpeg"
+                                    formControlName="image_src"
+                                    [ngClass]="{ 'is-invalid': submitted && f['image_src'].errors }"
+                                    (change)="fileChange($event)">
+                                <div *ngIf="submitted && f['image_src'].errors"
+                                    class="invalid-feedback" align="left">
+                                    <div *ngIf="f['image_src'].errors['required']">Profile is required</div>
+                                </div>
+                            </div>
+                            <div class="avatar-lg p-1">
+                                <div class="avatar-title bg-light rounded-circle">
+                                    <img src="assets/images/users/user-dummy-img.jpg" id="customer-img"
+                                        class="avatar-md rounded-circle object-fit-cover" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
                 <div class="col-lg-12">
                     <label for="firstName-field" class="form-label">First Name</label>
