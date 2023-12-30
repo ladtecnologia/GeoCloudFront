@@ -27,10 +27,12 @@ import { WidgetModule } from '../shared/widget/widget.module';
 
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { UsersComponent } from './users/users.component';
+import { AccountsComponent } from './accounts/accounts.component';
 
 @NgModule({
   declarations: [
     UsersComponent,
+    AccountsComponent,
  ],
   imports: [
     CommonModule,

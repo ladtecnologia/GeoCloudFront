@@ -1,4 +1,4 @@
-<app-breadcrumbs title="Users" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+<app-breadcrumbs title="Accounts" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
 <div class="row">
     <div class="col-lg-12">
@@ -8,7 +8,7 @@
                     <div class="flex-grow-1">
                         <button class="btn btn-info add-btn" data-bs-toggle="modal" data-bs-target="#showModal"
                             (click)="modalPost(content)">
-                            <i class="ri-add-fill me-1 align-bottom"></i> Add User
+                            <i class="ri-add-fill me-1 align-bottom"></i> Add Account
                         </button>
                     </div>
                     <div class="flex-shrink-0">
@@ -24,13 +24,13 @@
         </div>
     </div>
     <div class="col-xxl-9">
-        <div class="card" id="userList">
+        <div class="card" id="accountList">
             <div class="card-header">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="search-box">
                             <input type="text" name="searchTerm" class="form-control"
-                                placeholder="Search for user ..." (input)="filterUsers($event.target)">
+                                placeholder="Search for account ..." (input)="filterAccounts($event.target)">
                                 <!-- [(ngModel)]="service.searchTerm" -->
                             <i class="ri-search-line search-icon"></i>
                         </div>
@@ -41,10 +41,12 @@
                             <select class="form-control mb-0" data-choices data-choices-search-false [(ngModel)]="sortField"
                                 id="choices-single-default" (click)="OrderByChange();">
                                 <option value="id">-----</option>
-                                <option value="firstName">First Name</option>
-                                <option value="lastName">Last Name</option>
-                                <option value="email">Email</option>
+                                <option value="name">Name</option>
                                 <option value="company">Company</option>
+                                <option value="acessMaxAttempts">Attempts</option>
+                                <option value="validityUserPassword">Password</option>
+                                <option value="validInviteUser">Invite User</option>
+                                <option value="validInviteProject">Invite Project</option>
                             </select>
                         </div>
                     </div>
@@ -62,15 +64,17 @@
                                             [(ngModel)]="masterSelected" (change)="checkUncheckAll($event)">
                                         </div>
                                     </th>
-                                    <th class="sort" (click)="OrderByColumn('firstName')">First Name</th>
-                                    <th class="sort" (click)="OrderByColumn('lastName')">Last Name</th>
-                                    <th class="sort" (click)="OrderByColumn('email')">Email</th>
+                                    <th class="sort" (click)="OrderByColumn('name')">Name</th>
                                     <th class="sort" (click)="OrderByColumn('company')">Company</th>
+                                    <th class="sort" (click)="OrderByColumn('acessMaxAttempts')">Attempts</th>
+                                    <th class="sort" (click)="OrderByColumn('validityUserPassword')">Password</th>
+                                    <th class="sort" (click)="OrderByColumn('validInviteUser')">Invite User</th>
+                                    <th class="sort" (click)="OrderByColumn('validInviteProject')">Invite Project</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let data of users" id="c_{{data.id}}">
+                                <tr *ngFor="let data of accounts" id="c_{{data.id}}">
                                     <th scope="row">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="checkAll"
@@ -78,31 +82,28 @@
                                         </div>
                                     </th>
                                     <td>
-                                        <div>
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0"><img src="assets/images/users/{{data.id}}.jpg"
-                                                        alt="" class="avatar-xs rounded-circle">
-                                                </div>
-                                                <div class="flex-grow-1 ms-2 name">
-                                                    <ngb-highlight [result]="data.firstName + ' - ' + data.id" [term]="term"></ngb-highlight>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <ngb-highlight [result]="data.name + ' - ' + data.id" [term]="term"></ngb-highlight>
                                     </td>
                                     <td>
-                                        <ngb-highlight [result]="data.lastName" [term]="term"></ngb-highlight>
+                                        <ngb-highlight [result]="data.company" [term]="term"></ngb-highlight>
                                     </td>
                                     <td>
-                                        {{data.email}}
+                                        {{data.acessMaxAttempts}}
                                     </td>
                                     <td>
-                                        {{data.company}}
+                                        {{data.validityUserPassword}}
+                                    </td>
+                                    <td>
+                                        {{data.validInviteUser}}
+                                    </td>
+                                    <td>
+                                        {{data.validInviteProject}}
                                     </td>
                                     <td>
                                         <ul class="list-inline hstack gap-2 mb-0">
                                             <li class="list-inline-item" ngbTooltip="View" placement="top">
                                                 <a href="javascript:void(0);"
-                                                    (click)="viewUser(data.id)">
+                                                    (click)="viewAccount(data.id)">
                                                     <i class="ri-eye-fill align-bottom text-muted"></i>
                                                 </a>
                                             </li>
@@ -157,36 +158,39 @@
     </div>
     <div class="col-xxl-3">
         <div class="card">
-            <div class="card-body text-center user-details">
-                <div class="position-relative d-inline-block">
-                    <img id="_img" src="" alt="" class="avatar-lg rounded-circle img-thumbnail">
-                    <span class="user-active position-absolute rounded-circle bg-success"></span><span
-                        class="visually-hidden"></span>
-                </div>
-                <h5 class="mt-4 mb-1" id="__firstName"></h5>
-                <p class="text-muted" id="__lastName"></p>
+            <div class="card-body text-center account-details">
+                <h5 class="mt-4 mb-1" id="__name"></h5>
+                <p class="text-muted" id="__company"></p>
             </div>
             <div class="card-body">
-                <h6 class="text-muted text-uppercase fw-semibold mb-3">User Information</h6>
-                <p class="text-muted mb-4">This User is .............</p>
+                <h6 class="text-muted text-uppercase fw-semibold mb-3">Account Information</h6>
+                <p class="text-muted mb-4">This Account is .............</p>
                 <div class="table-responsive table-card">
                     <table class="table table-borderless mb-0">
                         <tbody>
                             <tr>
-                                <td class="fw-medium" scope="row">First Name</td>
-                                <td id="_firstName"></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-medium" scope="row">Last Name</td>
-                                <td id="_lastName"></td>
-                            </tr>
-                            <tr>
-                                <td class="fw-medium" scope="row">Email</td>
-                                <td id="_email"></td>
+                                <td class="fw-medium" scope="row">Name</td>
+                                <td id="_name"></td>
                             </tr>
                             <tr>
                                 <td class="fw-medium" scope="row">Company</td>
                                 <td id="_company"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-medium" scope="row">Max Attempts</td>
+                                <td id="_acessMaxAttempts"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-medium" scope="row">Validity Password</td>
+                                <td id="_validityUserPassword"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-medium" scope="row">Invite User</td>
+                                <td id="_validInviteUser"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-medium" scope="row">Invite Project</td>
+                                <td id="_validInviteProject"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -199,78 +203,25 @@
 <!-- ADD/EDIT Modal -->
 <ng-template #content role="document" let-modal>
     <div class="modal-header bg-info-subtle p-3">
-        <h5 class="modal-title" class="tablelist-form" autocomplete="off" id="modalTitle">Add User</h5>
+        <h5 class="modal-title" class="tablelist-form" autocomplete="off" id="modalTitle">Add Account</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
             id="close-modal" (click)="modal.dismiss('Cross click')"></button>
     </div>
-    <form [formGroup]="userForm">
+    <form [formGroup]="accountForm">
         <div class="modal-body">
             <input type="hidden" id="id-field" />
             <div class="row g-3">
                 <div class="col-lg-12">
                     <input type="hidden" name="id" value="" formControlName="id" />
-
-
-                    <div class="text-center">
-                        <div class="position-relative d-inline-block">
-                            <input type="hidden" name="id" value="" formControlName="ids" />
-                            <div class="position-absolute  bottom-0 end-0">
-                                <label for="customer-image-input" class="mb-0" data-bs-toggle="tooltip"
-                                    data-bs-placement="right" title="Select Image">
-                                    <div class="avatar-xs cursor-pointer">
-                                        <div
-                                            class="avatar-title bg-light border rounded-circle text-muted">
-                                            <i class="ri-image-fill"></i>
-                                        </div>
-                                    </div>
-                                </label>
-                                <input class="form-control d-none" id="customer-image-input" type="file"
-                                    accept="image/png, image/gif, image/jpeg"
-                                    formControlName="image_src"
-                                    [ngClass]="{ 'is-invalid': submitted && f['image_src'].errors }"
-                                    (change)="fileChange($event)">
-                                <div *ngIf="submitted && f['image_src'].errors"
-                                    class="invalid-feedback" align="left">
-                                    <div *ngIf="f['image_src'].errors['required']">Profile is required</div>
-                                </div>
-                            </div>
-                            <div class="avatar-lg p-1">
-                                <div class="avatar-title bg-light rounded-circle">
-                                    <img src="assets/images/users/user-dummy-img.jpg" id="customer-img"
-                                        class="avatar-md rounded-circle object-fit-cover" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
                 </div>
                 <div class="col-lg-12">
-                    <label for="firstName-field" class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="firstName-field" 
-                        formControlName="firstName" placeholder="Enter first name" 
-                        [ngClass]="cssValidator(f.firstName)">
-                    <div class="invalid-feedback" *ngIf="f.firstName.errors?.required">required field</div>
-                    <div class="invalid-feedback" *ngIf="f.firstName.errors?.minlength">minimum of 4 characters</div>
-                    <div class="invalid-feedback" *ngIf="f.firstName.errors?.maxlength">maximum 40 characters</div>
-                </div>
-                <div class="col-lg-12">
-                    <label for="lastName-field" class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="lastName-field" 
-                        formControlName="lastName" placeholder="Enter last name" 
-                        [ngClass]="cssValidator(f.lastName)">
-                    <div class="invalid-feedback" *ngIf="f.lastName.errors?.required">required field</div>
-                    <div class="invalid-feedback" *ngIf="f.lastName.errors?.minlength">minimum of 4 characters</div>
-                    <div class="invalid-feedback" *ngIf="f.lastName.errors?.maxlength">maximum 40 characters</div>
-                </div>
-                <div class="col-lg-12">
-                    <label for="email-field" class="form-label">Email</label>
-                    <input type="text" class="form-control" id="email-field" 
-                        formControlName="email" placeholder="Enter email" 
-                        [ngClass]="cssValidator(f.email)">
-                    <div class="invalid-feedback" *ngIf="f.email.errors?.required">required field</div>
-                    <div class="invalid-feedback" *ngIf="f.email.errors?.minlength">minimum of 4 characters</div>
-                    <div class="invalid-feedback" *ngIf="f.email.errors?.maxlength">maximum 40 characters</div>
+                    <label for="name-field" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name-field" 
+                        formControlName="name" placeholder="Enter name" 
+                        [ngClass]="cssValidator(f.name)">
+                    <div class="invalid-feedback" *ngIf="f.name.errors?.required">required field</div>
+                    <div class="invalid-feedback" *ngIf="f.name.errors?.minlength">minimum of 4 characters</div>
+                    <div class="invalid-feedback" *ngIf="f.name.errors?.maxlength">maximum 40 characters</div>
                 </div>
                 <div class="col-lg-12">
                     <label for="company-field" class="form-label">Company</label>
@@ -281,6 +232,42 @@
                     <div class="invalid-feedback" *ngIf="f.company.errors?.minlength">minimum of 4 characters</div>
                     <div class="invalid-feedback" *ngIf="f.company.errors?.maxlength">maximum 40 characters</div>
                 </div>
+                <div class="col-lg-12">
+                    <label for="acessMaxAttempts-field" class="form-label">Max Attempts</label>
+                    <input type="text" class="form-control" id="acessMaxAttempts-field" 
+                        formControlName="acessMaxAttempts" placeholder="Enter max attempts" 
+                        [ngClass]="cssValidator(f.acessMaxAttempts)">
+                    <div class="invalid-feedback" *ngIf="f.acessMaxAttempts.errors?.required">required field</div>
+                    <div class="invalid-feedback" *ngIf="f.acessMaxAttempts.errors?.min">minimum 2</div>
+                    <div class="invalid-feedback" *ngIf="f.acessMaxAttempts.errors?.max">maximum 10</div>
+                </div>
+                <div class="col-lg-12">
+                    <label for="validityUserPassword-field" class="form-label">Validity Password</label>
+                    <input type="text" class="form-control" id="validityUserPassword-field" 
+                        formControlName="validityUserPassword" placeholder="Enter validity password" 
+                        [ngClass]="cssValidator(f.validityUserPassword)">
+                    <div class="invalid-feedback" *ngIf="f.validityUserPassword.errors?.required">required field</div>
+                    <div class="invalid-feedback" *ngIf="f.validityUserPassword.errors?.min">minimum 10</div>
+                    <div class="invalid-feedback" *ngIf="f.validityUserPassword.errors?.max">maximum 90</div>
+                </div>
+                <div class="col-lg-12">
+                    <label for="validInviteUser-field" class="form-label">Invite User</label>
+                    <input type="text" class="form-control" id="validInviteUser-field" 
+                        formControlName="validInviteUser" placeholder="Enter invite user" 
+                        [ngClass]="cssValidator(f.validInviteUser)">
+                    <div class="invalid-feedback" *ngIf="f.validInviteUser.errors?.required">required field</div>
+                    <div class="invalid-feedback" *ngIf="f.validInviteUser.errors?.min">minimum 2</div>
+                    <div class="invalid-feedback" *ngIf="f.validInviteUser.errors?.max">maximum 30</div>
+                </div>
+                <div class="col-lg-12">
+                    <label for="validInviteProject-field" class="form-label">Invite Project</label>
+                    <input type="text" class="form-control" id="validInviteProject-field" 
+                        formControlName="validInviteProject" placeholder="Enter invite project" 
+                        [ngClass]="cssValidator(f.validInviteProject)">
+                    <div class="invalid-feedback" *ngIf="f.validInviteProject.errors?.required">required field</div>
+                    <div class="invalid-feedback" *ngIf="f.validInviteProject.errors?.min">minimum 2</div>
+                    <div class="invalid-feedback" *ngIf="f.validInviteProject.errors?.max">maximum 30</div>
+                </div>
             </div>
         </div>
         <div class="modal-footer">
@@ -288,7 +275,7 @@
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal"
                     (click)="modal.close('Close click')">Close</button>
                 <button class="btn btn-success" id="add-btn" 
-                    [disabled]="!userForm.valid"(click)="save()">Add User</button>
+                    [disabled]="!accountForm.valid"(click)="save()">Add Account</button>
             </div>
         </div>
     </form>
@@ -306,8 +293,8 @@
                 <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop"
                     colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px"></lord-icon>
                 <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
-                    <h4>You are about to delete a User ?</h4>
-                    <p class="text-muted mx-4 mb-0">Deleting your User will remove all of your information from our
+                    <h4>You are about to delete a Account ?</h4>
+                    <p class="text-muted mx-4 mb-0">Deleting your Account will remove all of your information from our
                         database.</p>
                 </div>
             </div>

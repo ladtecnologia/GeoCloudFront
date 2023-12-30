@@ -2,39 +2,39 @@ import { Injectable } from '@angular/core';
 import { Observable, take, map } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { GlobalComponent } from '../global-component';
-import { User } from '../models/User';
+import { Account } from '../models/Account';
 import { PaginatedResult } from '../models/Pagination';
 
 @Injectable()
-export class UserService {
+export class AccountService {
 
   constructor(private http: HttpClient) { }
 
-  public post(user: User): Observable<any>{
-    return this.http.post(GlobalComponent.baseURL+'User/add', user).pipe(take(1));
+  public post(account: Account): Observable<any>{
+    return this.http.post(GlobalComponent.baseURL+'Account/add', account).pipe(take(1));
   }
 
-  public put(user: User): Observable<any>{
-    return this.http.put(GlobalComponent.baseURL+'User/update', user).pipe(take(1));
+  public put(account: Account): Observable<any>{
+    return this.http.put(GlobalComponent.baseURL+'Account/update', account).pipe(take(1));
   }
 
   public delete(id: number): Observable<any>{
-    return this.http.delete(`${GlobalComponent.baseURL}User/delete?id=${id}`).pipe(take(1));
+    return this.http.delete(`${GlobalComponent.baseURL}Account/delete?id=${id}`).pipe(take(1));
   }
 
-  public getById(id: number): Observable<User>{
-    return this.http.get<User>(`${GlobalComponent.baseURL}User/getById?id=${id}`).pipe(take(1));
+  public getById(id: number): Observable<Account>{
+    return this.http.get<Account>(`${GlobalComponent.baseURL}Account/getById?id=${id}`).pipe(take(1));
   }
 
   //*********************************************************************************************** */
-  
+
   public get( page?: number,
               itemsPerPage?: number,
               term?: string,
               orderField?: string,
-              orderReverse?: boolean ): Observable<PaginatedResult<User[]>> 
+              orderReverse?: boolean ): Observable<PaginatedResult<Account[]>> 
   {
-    const paginatedResult: PaginatedResult<User[]> = new PaginatedResult<User[]>();
+    const paginatedResult: PaginatedResult<Account[]> = new PaginatedResult<Account[]>();
     let params = new HttpParams;
     if (page !=  null && itemsPerPage != null){
       params = params.append('pageNumber', page.toString());
@@ -49,7 +49,7 @@ export class UserService {
     if (orderReverse != null){
       params = params.append('orderReverse', orderReverse);
     }
-    return this.http.get<User[]>(GlobalComponent.baseURL+'User/get', {observe: 'response', params})
+    return this.http.get<Account[]>(GlobalComponent.baseURL+'Account/get', {observe: 'response', params})
                     .pipe(take(1), map((response) => {
       paginatedResult.result = response.body!;
       if(response.headers.has('Pagination')){

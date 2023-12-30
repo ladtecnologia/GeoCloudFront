@@ -18,6 +18,12 @@ export const MENU: MenuItem[] = [
         link: '/pages/users',
         parentId: 2
       },
+      {
+        id: 4,
+        label: 'Accounts',
+        link: '/pages/accounts',
+        parentId: 2
+      },
       
     ]
   },  

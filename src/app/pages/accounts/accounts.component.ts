@@ -5,25 +5,25 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import Swal from 'sweetalert2';
 
-import { User } from 'src/app/models/User';
-import { UserService } from 'src/app/services/user.service';
+import { Account } from 'src/app/models/Account';
+import { AccountService } from 'src/app/services/account.service';
 import { PaginatedResult, Pagination } from 'src/app/models/Pagination';
 
 import { Subject, debounceTime } from 'rxjs';
 import { ngxCsv } from 'ngx-csv';
 
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss'],
-  providers: [UserService]
+  selector: 'app-accounts',
+  templateUrl: './accounts.component.html',
+  styleUrls: ['./accounts.component.scss'],
+  providers: [AccountService]
 })
-export class UsersComponent {
+export class AccountsComponent {
 
   // FORM MAIN ************************************************************************************
 
   public breadCrumbItems!: Array<{}>;
-  public users: User[] = [];
+  public accounts: Account[] = [];
   public term = '';
   public termoBuscaChanged: Subject<string> = new Subject<string>();
   public pagination = {} as Pagination;
@@ -32,16 +32,16 @@ export class UsersComponent {
   public masterSelected!: boolean; 
   public checkedValGet: number[] = [];
   
-  public user = {} as User;
-  public userForm!: FormGroup;
+  public account = {} as Account;
+  public accountForm!: FormGroup;
   public modeForm: string = '';
   public  submitted = false;
   get f(): any {
-    return this.userForm.controls;
+    return this.accountForm.controls;
   }
 
   constructor(
-    private userService : UserService,
+    private accountService : AccountService,
     private modalService: NgbModal,
     public fb: FormBuilder
     ) {}
@@ -49,24 +49,24 @@ export class UsersComponent {
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: 'Pages' },
-      { label: 'Users', active: true }
+      { label: 'Accounts', active: true }
     ];
     this.pagination = {currentPage: 1, pageSize: 8, totalCount: 1, totalPages:1} as Pagination;
-    this.getUsers();
+    this.getAccounts();
   }
 
   // GET and VIEW *********************************************************************************
 
-  public getUsers(): void {
-    this.userService.get(this.pagination.currentPage, 
-                         this.pagination.pageSize,
-                         this.term,
-                         this.sortField,
-                         this.sortReverse).subscribe({
-      next: (paginatedResult: PaginatedResult<User[]>) => {
-        this.users = paginatedResult.result!;
+  public getAccounts(): void {
+    this.accountService.get(this.pagination.currentPage, 
+                            this.pagination.pageSize,
+                            this.term,
+                            this.sortField,
+                            this.sortReverse).subscribe({
+      next: (paginatedResult: PaginatedResult<Account[]>) => {
+        this.accounts = paginatedResult.result!;
         this.pagination = paginatedResult.pagination!;
-        this.viewUser(this.users[0].id!);
+        this.viewAccount(this.accounts[0].id!);
       },
       error: (error: any) => {
         console.error(error);
@@ -75,17 +75,18 @@ export class UsersComponent {
     })
   }
 
-  public viewUser(id: any) {
+  public viewAccount(id: any) {
     if (id > 0) {
-      this.userService.getById(id).subscribe({
-        next: (res: User) => {
-          (document.getElementById('__firstName') as HTMLImageElement).innerHTML = res.lastName! + ', ' + res.firstName!;
-          (document.getElementById('__lastName') as HTMLImageElement).innerHTML  = res.company!;
-          (document.getElementById('_firstName') as HTMLImageElement).innerHTML  = res.firstName! + ' - ' + res.id!;
-          (document.getElementById('_lastName') as HTMLImageElement).innerHTML   = res.lastName!;
-          (document.getElementById('_email') as HTMLImageElement).innerHTML      = res.email!;
-          (document.getElementById('_company') as HTMLImageElement).innerHTML    = res.company!;
-          (document.getElementById('_img') as HTMLImageElement).src              = 'assets/images/users/' + res.id! + '.jpg';
+      this.accountService.getById(id).subscribe({
+        next: (res: Account) => {
+          (document.getElementById('__name') as HTMLImageElement).innerHTML                = res.name!;
+          (document.getElementById('__company') as HTMLImageElement).innerHTML             = res.company!;
+          (document.getElementById('_name') as HTMLImageElement).innerHTML                 = res.name! + ' - ' + res.id!;
+          (document.getElementById('_company') as HTMLImageElement).innerHTML              = res.company!;
+          (document.getElementById('_acessMaxAttempts') as HTMLImageElement).innerHTML     = String(res.acessMaxAttempts!);
+          (document.getElementById('_validityUserPassword') as HTMLImageElement).innerHTML = String(res.validityUserPassword!);
+          (document.getElementById('_validInviteUser') as HTMLImageElement).innerHTML      = String(res.validInviteUser!);
+          (document.getElementById('_validInviteProject') as HTMLImageElement).innerHTML   = String(res.validInviteProject!);
         },
         error: (error: any) => {
           console.error(error);
@@ -97,13 +98,13 @@ export class UsersComponent {
 
   // FILTER, ORDER, PAGINATED and EXPORT *********************************************************
 
-  public filterUsers(evt: any) : void {
+  public filterAccounts(evt: any) : void {
     if (this.termoBuscaChanged.observers.length == 0){
       this.termoBuscaChanged.pipe(debounceTime(400)).subscribe({
         next: (term) => {
           this.pagination.currentPage = 1;
           this.term = term;
-          this.getUsers();
+          this.getAccounts();
         }
       });
     }
@@ -112,7 +113,7 @@ export class UsersComponent {
 
   public OrderByChange() {
     this.sortReverse = false;
-    this.getUsers(); 
+    this.getAccounts(); 
   }
 
   public OrderByColumn(sortField: string) {
@@ -121,13 +122,13 @@ export class UsersComponent {
     else 
       { this.sortReverse = false; }
     this.sortField = sortField;
-    this.getUsers(); 
+    this.getAccounts(); 
   }
 
   public pageChanged(event: any): void {
     if (this.pagination.currentPage != event.page) {
       this.pagination.currentPage = event.page;
-      this.getUsers();
+      this.getAccounts();
     }
   }
 
@@ -147,12 +148,12 @@ export class UsersComponent {
       decimalseparator: '.',
       showLabels: true,
       showTitle: true,
-      title: 'User Data',
+      title: 'Account Data',
       useBom: true,
       noDownload: false,
-      headers: ["id", "fisrtName", "lastName", "email", "company"]
+      headers:["id", "name", "company", "acessMaxAttempts", "validityUserPassword", "validInviteUser", "validInviteProject"]  
     };
-    new ngxCsv(this.users, "Users", options);
+    new ngxCsv(this.accounts, "Accounts", options);
   }
   
   // CHECK BOX ************************************************************************************
@@ -205,9 +206,9 @@ export class UsersComponent {
   public delete() {
     this.checkedValGet.forEach((i: any) => {
     console.log(i);
-      this.userService.delete(i).subscribe({
+      this.accountService.delete(i).subscribe({
         next: (res: any) => {  
-          this.getUsers();          
+          this.getAccounts();          
         },
         error: (error: any) => {
           console.error(error);
@@ -224,13 +225,14 @@ export class UsersComponent {
   }
 
   private validation(): void {
-    this.userForm = this.fb.group({
-      image_src: ['avatar-8.jpg'],
-      id:        [''],
-      firstName: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
-      lastName:  ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
-      email:     ['', [Validators.required, Validators.minLength(4), Validators.maxLength(60)]],
-      company:   ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+    this.accountForm = this.fb.group({
+      id                  : [''],
+      name                : ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+      company             : ['', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+      acessMaxAttempts    : ['', [Validators.required, Validators.min(2),  Validators.max(10)]],
+      validityUserPassword: ['', [Validators.required, Validators.min(10), Validators.max(90)]],  
+      validInviteUser     : ['', [Validators.required, Validators.min(2),  Validators.max(30)]],     
+      validInviteProject  : ['', [Validators.required, Validators.min(2),  Validators.max(30)]], 
     });
   }
 
@@ -246,19 +248,19 @@ export class UsersComponent {
     this.modalService.open(content, { size: 'md', centered: true });
     //Change Title and Button
     var modelTitle = document.getElementById('modalTitle') as HTMLAreaElement;
-    modelTitle.innerHTML = 'Edit User';
+    modelTitle.innerHTML = 'Edit Account';
     var updateBtn = document.getElementById('add-btn') as HTMLAreaElement;
     updateBtn.innerHTML = 'Update';
     if (id > 0) {
-      this.userService.getById(id).subscribe({
-        next: (user: User) => {
-          this.userForm.controls['id'].setValue(user.id);
-          this.userForm.controls['firstName'].setValue(user.firstName);
-          this.userForm.controls['lastName'].setValue(user.lastName);
-          this.userForm.controls['email'].setValue(user.email);
-          this.userForm.controls['company'].setValue(user.company);
-          this.userForm.controls['image_src'].setValue('assets/images/users/'+user.id+'.jpg');
-          (document.getElementById('customer-img') as HTMLImageElement).src = 'assets/images/users/'+user.id+'.jpg';
+      this.accountService.getById(id).subscribe({
+        next: (account: Account) => {
+          this.accountForm.controls['id'].setValue(account.id);
+          this.accountForm.controls['name'].setValue(account.name);
+          this.accountForm.controls['company'].setValue(account.company);
+          this.accountForm.controls['acessMaxAttempts'].setValue(account.acessMaxAttempts);
+          this.accountForm.controls['validityUserPassword'].setValue(account.validityUserPassword);
+          this.accountForm.controls['validInviteUser'].setValue(account.validInviteUser);
+          this.accountForm.controls['validInviteProject'].setValue(account.validInviteProject);
         },
         error: (error: any) => {
           console.error(error);
@@ -269,15 +271,15 @@ export class UsersComponent {
   }
 
   public save(): void {
-    if (this.userForm.valid){
-      this.user = {...this.userForm.value};
+    if (this.accountForm.valid){
+      this.account = {...this.accountForm.value};
       if (this.modeForm == 'post') {
-        this.user.id = 0;
-        this.userService.post(this.user).subscribe({
+        this.account.id = 0;
+        this.accountService.post(this.account).subscribe({
           next: (res: any) => {
             this.modalService.dismissAll();
-            this.getUsers();
-            this.msg('User inserted successfully!');
+            this.getAccounts();
+            this.msg('Account inserted successfully!');
           },
           error: (error: any) => {
             console.error(error);
@@ -287,15 +289,15 @@ export class UsersComponent {
       }
       else {
         if (this.modeForm == 'put') {
-          this.userService.put(this.user).subscribe({
+          this.accountService.put(this.account).subscribe({
             next: (res: any) => {
               this.modalService.dismissAll();
-              this.getUsers();
-              this.msg('User edited successfully!');
+              this.getAccounts();
+              this.msg('Account edited successfully!');
             },
             error: (res: any) => {
               console.error(res);
-              this.msg('error');
+              this.msg('error y');
             }
           })
         }
@@ -323,4 +325,5 @@ export class UsersComponent {
   }
 
 }
+
 
