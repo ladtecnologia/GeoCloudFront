@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 // Register Auth
-import { environment } from '../../../environments/environment';
 import { AuthenticationService } from '../../core/services/auth.service';
 import { UserProfileService } from '../../core/services/user.service';
 import { Router } from '@angular/router';
@@ -63,35 +62,7 @@ export class RegisterComponent implements OnInit {
       this.error = error ? error : '';
     });
 
-    // stop here if form is invalid
-    // if (this.signupForm.invalid) {
-    //   return;
-    // } else {
-    //   if (environment.defaultauth === 'firebase') {
-    //     this.authenticationService.register(this.f['email'].value, this.f['password'].value).then((res: any) => {
-    //       this.successmsg = true;
-    //       if (this.successmsg) {
-    //         this.router.navigate(['']);
-    //       }
-    //     })
-    //       .catch((error: string) => {
-    //         this.error = error ? error : '';
-    //       });
-    //   } else {
-    //     this.userService.register(this.signupForm.value)
-    //       .pipe(first())
-    //       .subscribe(
-    //         (data: any) => {
-    //           this.successmsg = true;
-    //           if (this.successmsg) {
-    //             this.router.navigate(['/auth/login']);
-    //           }
-    //         },
-    //         (error: any) => {
-    //           this.error = error ? error : '';
-    //         });
-    //   }
-    // }
+    
   }
 
 }
