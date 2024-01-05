@@ -20,10 +20,7 @@ export class LoginComponent implements OnInit {
   fieldTextType!: boolean;
   error = '';
   returnUrl!: string;
-
-  // set the current year
   year: number = new Date().getFullYear();
-  // Carousel navigation arrow show
   showNavigationArrows: any;
 
   constructor(private formBuilder: UntypedFormBuilder,
@@ -33,12 +30,15 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     // Form Validation
     this.loginForm = this.formBuilder.group({
-      email: ['adm@geocloudai.com', [Validators.required, Validators.email]],
-      password: ['GeoCloudAI_2024', Validators.required],
+      email     : ['adm@geocloudai.com', [Validators.required, Validators.email]],
+      password  : ['GeoCloudAI_2024', [Validators.required]],
     });
   }
+
+  //adm@geocloudai.com
+  //GeoCloudAI_2024
  
-  get f() { return this.loginForm.controls; }
+  get f(): any { return this.loginForm.controls; }
 
   // Form submit
   onSubmit() {
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    if (this.f['email'].value == 'adm@geocloudai.com' && this.f['password'].value == 'GeoCloudAI_2024') {
+    if (this.f.email.value == 'adm@geocloudai.com' && this.f.password.value == 'GeoCloudAI_2024') {
       this.router.navigate(['/pages/users']);
     } else {
       this.toastService.show('Email or password incorrect !', { classname: 'bg-danger text-white', delay: 5000 });

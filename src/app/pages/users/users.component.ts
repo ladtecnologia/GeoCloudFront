@@ -43,8 +43,7 @@ export class UsersComponent {
   constructor(
     private userService : UserService,
     private modalService: NgbModal,
-    public fb: FormBuilder
-    ) {}
+    public fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.breadCrumbItems = [

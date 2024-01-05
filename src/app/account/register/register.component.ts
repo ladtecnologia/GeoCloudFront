@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
 // Register Auth
@@ -6,6 +6,7 @@ import { AuthenticationService } from '../../core/services/auth.service';
 import { UserProfileService } from '../../core/services/user.service';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-register',
@@ -18,51 +19,66 @@ import { first } from 'rxjs/operators';
  */
 export class RegisterComponent implements OnInit {
 
+  @ViewChild("customNav")
+  customNav: any;
+
   // Login Form
   signupForm!: UntypedFormGroup;
   submitted = false;
   successmsg = false;
   error = '';
-  // set the current year
   year: number = new Date().getFullYear();
 
-  constructor(private formBuilder: UntypedFormBuilder, private router: Router,
-    private authenticationService: AuthenticationService,
-    private userService: UserProfileService) { }
+  valid1 = "nav-link disabled";
+  valid2 = "nav-link disabled";
+  valid3 = "nav-link disabled";
+  valid4 = "nav-link disabled";
+
+  constructor(private formBuilder: UntypedFormBuilder, 
+              private router: Router,
+              private authenticationService: AuthenticationService,
+              private userService: UserProfileService) { }
 
   ngOnInit(): void {
-    /**
-     * Form Validatyion
-     */
-     this.signupForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      name: ['', [Validators.required]],
-      password: ['', Validators.required],
+    this.signupForm = this.formBuilder.group({
+      //Step 1 - User
+      firstName : ['xxxx', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+      lastName  : ['xxxx', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+      phone     : ['xxxx', [Validators.maxLength(40)]],
+      email     : ['xxxx@xxxx', [Validators.required, Validators.maxLength(60), Validators.email]],
+      password  : ['xxxxxxxx', [Validators.required, Validators.minLength(8), Validators.maxLength(40)]],
+      //Step 2 - Location
+      country   : ['1', [Validators.required]],
+      state     : ['xxxx', [Validators.required, Validators.minLength(2), Validators.maxLength(40)]],
+      city      : ['xxxx', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+      //Step 3 - Account
+      account   : ['xxxx', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+      company   : ['xxxx', [Validators.required, Validators.minLength(4), Validators.maxLength(40)]],
+      employyes : ['1-5', [Validators.required]],
     });
   }
 
-  // convenience getter for easy access to form fields
-  get f() { return this.signupForm.controls; }
+  get f(): any { return this.signupForm.controls; }
 
-  /**
-   * Register submit form
-   */
-   onSubmit() {
-    this.submitted = true;
-    
-    //Register Api
-    this.authenticationService.register(this.f['email'].value, this.f['name'].value, this.f['password'].value).pipe(first()).subscribe(
-      (data: any) => {
-      this.successmsg = true;
-      if (this.successmsg) {
-        this.router.navigate(['/auth/login']);
-      }
-    },
-    (error: any) => {
-      this.error = error ? error : '';
-    });
-
-    
+  nextStep(id: number): void {
+    this.customNav.select(id);
+    if (id == 1) { 
+      this.valid1 = "nav-link disabled"; 
+    }
+    if (id == 2) { 
+      this.valid1 = "nav-link disabled done"; 
+      this.valid2 = "nav-link disabled"; 
+    }
+    if (id == 3) { 
+      this.valid2 = "nav-link disabled done"; 
+    }
+    if (id == 4) { 
+      this.valid3 = "nav-link disabled done"; 
+      this.valid4 = "nav-link disabled done";
+    }
   }
+
+
+  
 
 }

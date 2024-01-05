@@ -10,7 +10,6 @@
             </svg>
         </div>
     </div>
-
     <!-- auth page content -->
     <div class="auth-page-content">
         <div class="container">
@@ -27,260 +26,214 @@
                 </div>
             </div>
             <!-- end row -->
-
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-9">
                     <div class="card mt-2">
-
                         <div class="card-body p-4">
                             <div class="text-center mt-2">
                                 <h5 class="text-primary">Create New Account</h5>
                                 <p class="text-muted">Get your free GeoCloudAI account now</p>
                             </div>
                             <div class="p-2 mt-2">
-                                <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-
-
+                                <form [formGroup]="signupForm">
                                     <div class="card-body form-steps">
-                                        <form class="vertical-navs-step">
+                                        <div class="vertical-navs-step">
                                             <div class="row gy-5">
                                                 <div class="col-lg-3">
-                                                    <div role="tablist" aria-orientation="vertical">
-                                                        
-                                                        <ul ngbNav #customNav="ngbNav" [activeId]="1"
-                                                            class="nav flex-column custom-nav nav-pills" role="tablist">
+                                                    <div role="tablist" aria-orientation="vertical" >
+                                                        <ul ngbNav #customNav="ngbNav" [activeId]="1" class="nav flex-column custom-nav nav-pills">
+                                                            
                                                             <li [ngbNavItem]="1" class="nav-item">
-                                                                <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
-                        
-                                                                    <span class="step-title me-2">
-                                                                        <i class="ri-close-circle-fill step-icon me-2"></i>
-                                                                        Step 1
-                                                                    </span>
-                                                                    User
+                                                                <a ngbNavLink class="{{valid1}}" data-bs-toggle="tab" role="tab">
+                                                                    <span class="step-title me-2"><i class="ri-close-circle-fill step-icon me-2"></i>Step 1</span>User
                                                                 </a>
                                                                 <ng-template ngbNavContent>
                                                                     <div>
                                                                         <h5>User Info</h5><br>
                                                                     </div>
-                        
                                                                     <div>
                                                                         <div class="row g-3">
-                                                                            <div class="col-sm-6">
-                                                                                <label for="firstName" class="form-label">First name</label>
-                                                                                <input type="text" class="form-control" id="firstName"
-                                                                                    placeholder="Enter First Name" value="">
+                                                                            <div class="col-6">
+                                                                                <label for="firstName" class="form-label">First Name</label>
+                                                                                <input type="text" class="form-control" id="firstName" placeholder="Enter first name"
+                                                                                    formControlName="firstName" [ngClass]="{ 'is-invalid': f.firstName.errors && f.firstName.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.firstName.errors?.required">required field</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.firstName.errors?.minlength">minimum of 4 characters</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.firstName.errors?.maxlength">maximum 40 characters</div>
                                                                             </div>
-                        
-                                                                            <div class="col-sm-6">
-                                                                                <label for="lastName" class="form-label">Last name</label>
-                                                                                <input type="text" class="form-control" id="lastName"
-                                                                                    placeholder="Enter Last Name" value="">
+                                                                            <div class="col-6">
+                                                                                <label for="lastName" class="form-label">Last Name</label>
+                                                                                <input type="text" class="form-control" id="lastName" placeholder="Enter last name" 
+                                                                                    formControlName="lastName" [ngClass]="{ 'is-invalid': f.lastName.errors && f.lastName.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.lastName.errors?.required">required field</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.lastName.errors?.minlength">minimum of 4 characters</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.lastName.errors?.maxlength">maximum 40 characters</div>
                                                                             </div>
-                        
                                                                             <div class="col-12">
-                                                                                <label for="username" class="form-label">Username</label>
-                                                                                <div class="input-group">
-                                                                                    <span class="input-group-text">x</span>
-                                                                                    <input type="text" class="form-control" id="username"
-                                                                                        placeholder="Username">
-                                                                                </div>
+                                                                                <label for="phone" class="form-label">Phone<span class="text-muted">(Optional)</span></label>
+                                                                                <input type="text" class="form-control" id="phone" placeholder="Enter phone" 
+                                                                                    formControlName="phone" [ngClass]="{ 'is-invalid': f.phone.errors && f.phone.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.phone.errors?.maxlength">maximum 40 characters</div>
                                                                             </div>
-                        
                                                                             <div class="col-12">
-                                                                                <label for="email" class="form-label">Email <span
-                                                                                        class="text-muted">(Optional)</span></label>
-                                                                                <input type="email" class="form-control" id="email"
-                                                                                    placeholder="Enter Email">
+                                                                                <label for="email" class="form-label">Email</label>
+                                                                                <input type="email" class="form-control" id="email" placeholder="Enter email" 
+                                                                                    formControlName="email" [ngClass]="{ 'is-invalid': f.email.errors && f.email.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.email.errors?.required">required field</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.email.errors?.maxlength">maximum 60 characters</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.email.errors?.email">must be a valid email address</div>
+                                                                            </div>
+                                                                            <div class="col-12">
+                                                                                <label for="password" class="form-label">Password</label>
+                                                                                <input type="password" class="form-control" id="password" placeholder="Enter password"
+                                                                                    formControlName="password" [ngClass]="{ 'is-invalid': f.password.errors && f.password.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.password.errors?.required">required field</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.password.errors?.minlength">minimum of 8 characters</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.password.errors?.maxlength">maximum 40 characters</div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                        
-                                                                    <div class="d-flex align-items-start gap-3 mt-4">
-                                                                        <button type="button" class="btn btn-success btn-label right ms-auto"
-                                                                            (click)="customNav.select(2)">
+                                                                    <div class="d-flex align-items-start gap-3 mt-4"  >
+                                                                        <button type="button" class="btn btn-success btn-label right ms-auto" 
+                                                                            (click)="nextStep(2)"
+                                                                            [disabled]="f.firstName.errors || 
+                                                                                        f.lastName.errors || 
+                                                                                        f.email.errors || 
+                                                                                        f.password.errors">
                                                                             <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Go to Location
                                                                         </button>
                                                                     </div>
                                                                 </ng-template>
                                                             </li>
+
                                                             <li [ngbNavItem]="2" class="nav-item">
-                                                                <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
-                                                                    <span class="step-title me-2">
-                                                                        <i class="ri-close-circle-fill step-icon me-2"></i>
-                                                                        Step 2
-                                                                    </span>
-                                                                    Location
+                                                                <a ngbNavLink class="{{valid2}}" data-bs-toggle="tab" role="tab" >
+                                                                    <span class="step-title me-2"><i class="ri-close-circle-fill step-icon me-2"></i>Step 2</span>Location
                                                                 </a>
                                                                 <ng-template ngbNavContent>
                                                                     <div>
                                                                         <h5>Location Info</h5><br>
                                                                     </div>
-                        
                                                                     <div>
                                                                         <div class="row g-3">
-                                                                            <div class="col-12">
-                                                                                <label for="address" class="form-label">Address</label>
-                                                                                <input type="text" class="form-control" id="address"
-                                                                                    placeholder="1234 Main St">
-                                                                            </div>
-                        
-                                                                            <div class="col-12">
-                                                                                <label for="address2" class="form-label">Address 2 <span
-                                                                                        class="text-muted">(Optional)</span></label>
-                                                                                <input type="text" class="form-control" id="address2"
-                                                                                    placeholder="Apartment or suite">
-                                                                            </div>
-                        
-                                                                            <div class="col-md-5">
+                                                                            <div class="col-md-6">
                                                                                 <label for="country" class="form-label">Country</label>
-                                                                                <select class="form-select" id="country">
-                                                                                    <option value="">Choose...</option>
-                                                                                    <option>United States</option>
+                                                                                <select class="form-select" id="country" 
+                                                                                    formControlName="country" [ngClass]="{ 'is-invalid': f.country.errors && f.country.touched}">
+                                                                                    <option value="">Select country</option>
+                                                                                    <option value="1">United States</option>
+                                                                                    <option value="2">Brazil</option>
                                                                                 </select>
+                                                                                <div class="invalid-feedback" *ngIf="f.country.errors?.required">required field</div>
                                                                             </div>
-                        
-                                                                            <div class="col-md-4">
+                                                                            <div class="col-6">
                                                                                 <label for="state" class="form-label">State</label>
-                                                                                <select class="form-select" id="state">
-                                                                                    <option value="">Choose...</option>
-                                                                                    <option>California</option>
-                                                                                </select>
+                                                                                <input type="text" class="form-control" id="state" placeholder="Enter state" 
+                                                                                    formControlName="state" [ngClass]="{ 'is-invalid': f.state.errors && f.state.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.state.errors?.required">required field</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.state.errors?.minlength">minimum of 2 characters</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.state.errors?.maxlength">maximum 40 characters</div>
                                                                             </div>
-                        
-                                                                            <div class="col-md-3">
-                                                                                <label for="zip" class="form-label">Zip</label>
-                                                                                <input type="text" class="form-control" id="zip" placeholder="">
+                                                                            <div class="col-12">
+                                                                                <label for="city" class="form-label">City</label>
+                                                                                <input type="text" class="form-control" id="city" placeholder="Enter city" 
+                                                                                    formControlName="city" [ngClass]="{ 'is-invalid': f.city.errors && f.city.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.city.errors?.required">required field</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.city.errors?.minlength">minimum of 4 characters</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.city.errors?.maxlength">maximum 40 characters</div>
                                                                             </div>
                                                                         </div>
-                        
-                                                                        
                                                                     </div>
                                                                     <div class="d-flex align-items-start gap-3 mt-4">
                                                                         <button type="button" class="btn btn-light btn-label"
-                                                                            (click)="customNav.select(1)">
+                                                                            (click)="nextStep(1)">
                                                                             <i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>Back to User
                                                                         </button>
                                                                         <button type="button" class="btn btn-success btn-label right ms-auto"
-                                                                            (click)="customNav.select(3)">
+                                                                            (click)="nextStep(3)"
+                                                                            [disabled]="f.country.errors ||
+                                                                                        f.state.errors || 
+                                                                                        f.city.errors">
                                                                             <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Go to Account
                                                                         </button>
                                                                     </div>
                                                                 </ng-template>
                                                             </li>
+
                                                             <li [ngbNavItem]="3" class="nav-item">
-                                                                <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
-                        
-                                                                    <span class="step-title me-2">
-                                                                        <i class="ri-close-circle-fill step-icon me-2"></i>
-                                                                        Step 3
-                                                                    </span>
-                                                                    Account
+                                                                <a ngbNavLink class="{{valid3}}" data-bs-toggle="tab" role="tab" >
+                                                                    <span class="step-title me-2"><i class="ri-close-circle-fill step-icon me-2" ></i>Step 3</span>Account
                                                                 </a>
                                                                 <ng-template ngbNavContent>
                                                                     <div>
                                                                         <h5>Account</h5><br>
                                                                     </div>
-                        
                                                                     <div>
-                                                                        <div class="my-3">
-                                                                            <div class="form-check form-check-inline">
-                                                                                <input id="credit" name="paymentMethod" type="radio"
-                                                                                    class="form-check-input" checked required>
-                                                                                <label class="form-check-label" for="credit">Credit card</label>
+                                                                        <div class="row g-3">
+                                                                            <div class="col-12">
+                                                                                <label for="account" class="form-label">Account</label>
+                                                                                <input type="text" class="form-control" id="account" placeholder="Enter account name" 
+                                                                                    formControlName="account" [ngClass]="{ 'is-invalid': f.account.errors && f.account.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.account.errors?.required">required field</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.account.errors?.minlength">minimum of 4 characters</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.account.errors?.maxlength">maximum 40 characters</div>
                                                                             </div>
-                                                                            <div class="form-check form-check-inline">
-                                                                                <input id="debit" name="paymentMethod" type="radio"
-                                                                                    class="form-check-input" required>
-                                                                                <label class="form-check-label" for="debit">Debit card</label>
+                                                                            <div class="col-12">
+                                                                                <label for="company" class="form-label">Company</label>
+                                                                                <input type="text" class="form-control" id="company" placeholder="Enter company" 
+                                                                                    formControlName="company" [ngClass]="{ 'is-invalid': f.company.errors && f.company.touched}">
+                                                                                <div class="invalid-feedback" *ngIf="f.company.errors?.required">required field</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.company.errors?.minlength">minimum of 4 characters</div>
+                                                                                <div class="invalid-feedback" *ngIf="f.company.errors?.maxlength">maximum 40 characters</div>
                                                                             </div>
-                                                                            <div class="form-check form-check-inline">
-                                                                                <input id="paypal" name="paymentMethod" type="radio"
-                                                                                    class="form-check-input" required>
-                                                                                <label class="form-check-label" for="paypal">PayPal</label>
-                                                                            </div>
-                                                                        </div>
-                        
-                                                                        <div class="row gy-3">
-                                                                            <div class="col-md-12">
-                                                                                <label for="cc-name" class="form-label">Name on card</label>
-                                                                                <input type="text" class="form-control" id="cc-name"
-                                                                                    placeholder="" required>
-                                                                                <small class="text-muted">Full name as displayed on card</small>
-                                                                                <div class="invalid-feedback">
-                                                                                    Name on card is required
-                                                                                </div>
-                                                                            </div>
-                        
                                                                             <div class="col-md-6">
-                                                                                <label for="cc-number" class="form-label">Credit card
-                                                                                    number</label>
-                                                                                <input type="text" class="form-control" id="cc-number"
-                                                                                    placeholder="" required>
-                                                                                <div class="invalid-feedback">
-                                                                                    Credit card number is required
-                                                                                </div>
+                                                                                <label for="employyes" class="form-label">Employyes</label>
+                                                                                <select class="form-select" id="employyes"
+                                                                                    formControlName="employyes" [ngClass]="{ 'is-invalid': f.employyes.errors && f.employyes.touched}">
+                                                                                    <option value="">Select employyes</option>
+                                                                                    <option value="1-5">1 to 5</option>
+                                                                                    <option value="6-10">6 to 10</option>
+                                                                                    <option value="10-50">10 to 50</option>
+                                                                                    <option value="50+">50+</option>
+                                                                                </select>
                                                                             </div>
-                        
-                                                                            <div class="col-md-3">
-                                                                                <label for="cc-expiration" class="form-label">Expiration</label>
-                                                                                <input type="text" class="form-control" id="cc-expiration"
-                                                                                    placeholder="" required>
-                                                                                <div class="invalid-feedback">
-                                                                                    Expiration date required
-                                                                                </div>
-                                                                            </div>
-                        
-                                                                            <div class="col-md-3">
-                                                                                <label for="cc-cvv" class="form-label">CVV</label>
-                                                                                <input type="text" class="form-control" id="cc-cvv"
-                                                                                    placeholder="" required>
-                                                                                <div class="invalid-feedback">
-                                                                                    Security code required
-                                                                                </div>
-                                                                            </div>
-
-                                                                        
+                                                                            <hr class="my-4 text-muted">
                                                                         </div>
-                                                                        <hr class="my-4 text-muted">
-                        
-                                                                        
                                                                     </div>
-                        
                                                                     <div class="d-flex align-items-start gap-3 mt-4">
                                                                         <button type="button" class="btn btn-light btn-label"
-                                                                            (click)="customNav.select(2)">
+                                                                            (click)="nextStep(2)">
                                                                             <i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>Back to Location
                                                                         </button>
                                                                         <button type="button" class="btn btn-success btn-label right ms-auto"
-                                                                            (click)="customNav.select(4)">
+                                                                            (click)="nextStep(4)"
+                                                                            [disabled]="f.account.errors ||
+                                                                                        f.company.errors ||
+                                                                                        f.employyes.errors">
                                                                             <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Signup
                                                                         </button>
                                                                     </div>
                                                                 </ng-template>
                                                             </li>
+                                                            
                                                             <li [ngbNavItem]="4" class="nav-item">
-                                                                <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
-                        
-                                                                    <span class="step-title me-2">
-                                                                        <i class="ri-close-circle-fill step-icon me-2"></i>
-                                                                        Step 4
-                                                                    </span>
-                                                                    Finish
+                                                                <a ngbNavLink class="{{valid4}}" data-bs-toggle="tab" role="tab">
+                                                                    <span class="step-title me-2"><i class="ri-close-circle-fill step-icon me-2"></i>Step 4</span>Finish
                                                                 </a>
                                                                 <ng-template ngbNavContent>
                                                                     <div class="text-center pt-4 pb-2">
-                        
                                                                         <div class="mb-4">
                                                                             <lord-icon src="https://cdn.lordicon.com/lupuorrc.json"
                                                                                 trigger="loop" colors="primary:#0ab39c,secondary:#405189"
                                                                                 style="width:120px;height:120px"></lord-icon>
                                                                         </div>
                                                                         <h5>Your Signup is Completed !</h5>
-                                                                        <p class="text-muted">You Will receive an confirmation email with
+                                                                        <p class="text-muted">You will receive an confirmation email with
                                                                             details of your account.</p>
                                                                     </div>
                                                                 </ng-template>
                                                             </li>
+
                                                         </ul>
                                                     </div>
                                                     <!-- end nav -->
@@ -296,64 +249,18 @@
                                                 <!-- end col -->
                                             </div>
                                             <!-- end row -->
-                                        </form>
-                                    </div>
-
-
-
-
-
-
-
-
-
-
-                                    <!-- <div class="mb-3">
-                                        <label for="useremail" class="form-label">Email <span
-                                                class="text-danger">*</span></label>
-                                        <input type="email" class="form-control" id="useremail"
-                                            placeholder="Enter email address" required formControlName="email"
-                                            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }">
-                                        <div class="invalid-feedback">
-                                            Please enter email
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="username" class="form-label">Username <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" id="username"
-                                            placeholder="Enter username" required formControlName="name"
-                                            [ngClass]="{ 'is-invalid': submitted && f['name'].errors }">
-                                        <div class="invalid-feedback">
-                                            Please enter username
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label for="userpassword" class="form-label">Password <span
-                                                class="text-danger">*</span></label>
-                                        <input type="password" class="form-control" id="userpassword"
-                                            placeholder="Enter password" required formControlName="password"
-                                            [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
-                                        <div class="invalid-feedback">
-                                            Please enter password
-                                        </div>
-                                    </div> -->
-
-                                                                        
                                 </form>
-
                             </div>
                         </div>
                         <!-- end card body -->
                     </div>
                     <!-- end card -->
-
                     <div class="mt-4 text-center">
                         <p class="mb-0">Already have an account ? 
-                        <a routerLink="" class="fw-semibold text-primary text-decoration-underline"> Signin </a> </p>
+                        <a routerLink="" class="fw-semibold text-primary text-decoration-underline">Signin</a></p>
                     </div>
-
                 </div>
             </div>
             <!-- end row -->
