@@ -1,17 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 
-// Register Auth
-import { AuthenticationService } from '../../core/services/auth.service';
-import { UserProfileService } from '../../core/services/user.service';
-import { Router } from '@angular/router';
-import { first } from 'rxjs/operators';
-import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
+
+import { Account } from 'src/app/models/Account';
+import { Profile } from 'src/app/models/Profile';
+import { User } from 'src/app/models/User';
+
+import { AccountService } from 'src/app/services/account.service';
+import { ProfileService } from 'src/app/services/profile.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
+  providers: [AccountService, ProfileService, UserService]
 })
 
 /**
@@ -29,15 +33,19 @@ export class RegisterComponent implements OnInit {
   error = '';
   year: number = new Date().getFullYear();
 
+  public account = {} as Account;
+  public profile = {} as Profile;
+  public user    = {} as User;
+
   valid1 = "nav-link disabled";
   valid2 = "nav-link disabled";
   valid3 = "nav-link disabled";
   valid4 = "nav-link disabled";
 
   constructor(private formBuilder: UntypedFormBuilder, 
-              private router: Router,
-              private authenticationService: AuthenticationService,
-              private userService: UserProfileService) { }
+              private accountService : AccountService,
+              private profileService : ProfileService,
+              private userService : UserService) { }
 
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
@@ -60,7 +68,7 @@ export class RegisterComponent implements OnInit {
 
   get f(): any { return this.signupForm.controls; }
 
-  nextStep(id: number): void {
+  public nextStep(id: number): void {
     this.customNav.select(id);
     if (id == 1) { 
       this.valid1 = "nav-link disabled"; 
@@ -75,10 +83,81 @@ export class RegisterComponent implements OnInit {
     if (id == 4) { 
       this.valid3 = "nav-link disabled done"; 
       this.valid4 = "nav-link disabled done";
+      this.save();
     }
   }
+
+  public save(): void {
+    if (this.signupForm.valid){
+      //Account
+      this.account.id                   = 0;
+      this.account.name                 = this.signupForm.controls['account'].value;
+      this.account.company              = this.signupForm.controls['company'].value;
+      this.account.acessMaxAttempts     = 5;
+      this.account.validityUserPassword = 30;
+      this.account.validInviteUser      = 15;
+      this.account.validInviteProject   = 15;
+      this.accountService.post(this.account).subscribe({
+        next: (resAccount: Account) => {
+          console.log('Account Id = ' + resAccount.id);
+          //Profile
+          this.profile.id      = 0;
+          this.profile.account = resAccount;
+          this.profile.name    = 'Administrator';
+          this.profileService.post(this.profile).subscribe({
+            next: (resProfile: Profile) => {
+              console.log('Profile Id = ' + resProfile.id);
+
+
+              //User
+              this.user.id        = 0;
+              //this.user.profile   = resProfile;
+              this.user.firstName = this.signupForm.controls['firstName'].value;
+              this.user.lastName  = this.signupForm.controls['lastName'].value;
+              this.user.email     = this.signupForm.controls['email'].value;
+              this.user.company   = 'xxxxx';
+              this.userService.post(this.user).subscribe({
+                
+                next: (resUser: User) => {
+                  console.log('User Id = ' + resUser.id);
+                },
+                error: (error: any) => {
+                  this.msg('saveUser error');
+                }
+              })
+
+            },
+            error: (error: any) => {
+              this.msg('saveProfile error');
+            }
+          })
+        },
+        error: (error: any) => {
+          this.msg('saveAccount error');
+        }
+      })
+    }  
+  }
+
+  public msg(msg: string){
+    let timerInterval: any;
+    Swal.fire({
+      title: msg,
+      icon: 'success',
+      timer: 2000,
+      timerProgressBar: true,
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    })
+  }
+
+          
+
+
+ }
 
 
   
 
-}
+
